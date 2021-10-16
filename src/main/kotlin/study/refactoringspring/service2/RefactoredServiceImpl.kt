@@ -13,7 +13,7 @@ import study.refactoringspring.service2.model.FullUserInfo
 import study.refactoringspring.service2.model.UserInfo
 import javax.annotation.PostConstruct
 
-@Service
+//@Service
 class RefactoredServiceImpl(
     private val userRepository: UserRepository
 ): RefactoredService {
@@ -40,10 +40,12 @@ class RefactoredServiceImpl(
 
     override fun getByStatus(status: String): List<UserInfo> {
         // 여전히 더러움 => 사용자로부터 status 정보를 문자열로 받기 때문에 별도의 작업 필요 => query 클래스 사용 등 다양한 방식으로 해결 가능할 것으로 보임
-        var filterCondition = Status.NERD // cf) 코틀린은 삼항연산자가 없다는 문제점 확인 가능
-        if (status == "NORMAL") {
-            filterCondition = Status.NORMAL
+        val filterCondition = if (status == "NERD") {
+            Status.NERD
+        } else{
+            Status.NORMAL
         }
+
         return userRepository.findAllByStatus(filterCondition).map {
             UserInfo.of(it)
         }
@@ -67,6 +69,8 @@ class RefactoredServiceImpl(
                 Status.NORMAL
             } // 코틀린의 경우 삼항연산자가 없어서 이런건 좀 더러움
 
+            val changed: Boolean = (it.status != newStatus)
+
             userRepository.save(
                 it.copy(
                     status = newStatus,
@@ -74,9 +78,9 @@ class RefactoredServiceImpl(
                 )
             )
 
-            if (it.status != newStatus) return
+            if (!changed) return@let
 
-            if (it.status == Status.NORMAL) {
+            if (it.status == Status.NERD) { // it.status == newStatus로 수정되었으므로 newStatus 사용해도 무관.
                 logger.info("${it.name}님이 너드가 되었습니다.")
             } else {
                 logger.info("${it.name}님께서 안타깝게도 일반인이 되었습니다.")

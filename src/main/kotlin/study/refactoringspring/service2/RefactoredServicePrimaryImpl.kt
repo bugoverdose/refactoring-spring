@@ -11,8 +11,8 @@ import study.refactoringspring.service2.command.EditNerdPoint
 import study.refactoringspring.service2.model.FullUserInfo
 
 // 인터페이스 주입시 복수의 구현체가 있으면 @Primary가 붙은 구현체 하나만 주입하도록 지정
-@Primary
-@Service
+//@Primary
+//@Service
 class RefactoredServicePrimaryImpl(
     private val refactoredService: RefactoredServiceImpl,
     private val userRepository: UserRepository

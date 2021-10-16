@@ -13,7 +13,7 @@ import study.refactoringspring.service1.model.FullUserInfo
 import study.refactoringspring.service1.model.UserInfo
 import javax.annotation.PostConstruct
 
-@Service // 최대한 verbose하게 작성한 코드
+//@Service // 최대한 verbose하게 작성한 코드
 class VerboseService(
     private val userRepository: UserRepository
 ) {
@@ -73,6 +73,8 @@ class VerboseService(
             }
             val updatedPoint = it.nerdPoint + command.additionalPoint
 
+            val prevStatus = it.status
+
             if (updatedPoint >= nerdBaseLine) {
                 userRepository.save(
                     it.copy(
@@ -81,7 +83,7 @@ class VerboseService(
                     )
                 )
                 // 너드로 변경되었는지의 여부를 별도로 기록
-                if (it.status == Status.NORMAL){
+                if (prevStatus == Status.NORMAL){
                     logger.info("${it.name}님이 너드가 되었습니다.")
                 }
             } else {
@@ -91,7 +93,7 @@ class VerboseService(
                         nerdPoint = updatedPoint
                     )
                 )
-                if (it.status == Status.NERD){
+                if (prevStatus == Status.NERD){
                     logger.info("${it.name}님께서 안타깝게도 일반인이 되었습니다.")
                 }
             }

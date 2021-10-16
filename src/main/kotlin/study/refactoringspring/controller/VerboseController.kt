@@ -19,9 +19,9 @@ import study.refactoringspring.service1.model.FullUserInfo
 import study.refactoringspring.service1.model.UserInfo
 import javax.transaction.Transactional
 
-@RequestMapping("refactoring")
-@RestController
-class UserController(
+//@RequestMapping("refactoring")
+//@RestController
+class VerboseController(
     private val userService: VerboseService,
 ) {
     @GetMapping("/me")
