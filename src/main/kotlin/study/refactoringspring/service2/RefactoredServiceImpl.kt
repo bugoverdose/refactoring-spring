@@ -60,7 +60,8 @@ class RefactoredServiceImpl(
     // 중요: PrimayImpl에서 findById로 가져온 UserEntity 정보를 다시 findById로 요청시,
     // JPA pool에 캐슁된 데이터를 그대로 사용하는 것으로 보임. 즉 DB에 별도로 SQL문을 날려서 성능 저하가 발생하지는 않는 것으로 추측됨.
     override fun editNerdPoint(command: EditNerdPoint): Unit {
-        userRepository.findById(command.userId).orElseThrow(::DataNotFoundException).let {
+        userRepository.findById(command.userId).get().let {
+            // get() 사용한 이유: 이전 단계에서 데이터 존재 여부 이미 체크했고 예외처리도 수행했으므로 DataNotFound 불필요
             val updatedPoint = it.nerdPoint + command.additionalPoint
 
             val newStatus = if (updatedPoint >= nerdBaseLine) {
