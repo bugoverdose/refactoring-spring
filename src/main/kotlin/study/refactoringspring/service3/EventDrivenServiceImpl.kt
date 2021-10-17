@@ -64,7 +64,7 @@ class EventDrivenServiceImpl(
             return NerdPointEdited(user = it, statusChanged = changed)
         }
 
-    @PostConstruct
+    @PostConstruct // 이 부분의 createUser의 각 실행에 대해 AOP가 동작하지 않는 것은 @PostConstruct 때문이라서인가?
     fun init() {
         val nameList = listOf(
             "jeong", "jinu", "jinwoo", "zinu", "henry", "liha", "mingsu", "cloud",

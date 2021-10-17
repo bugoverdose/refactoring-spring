@@ -22,7 +22,7 @@ import javax.transaction.Transactional
 //@RequestMapping("refactoring")
 //@RestController
 class RefactoredController(
-    private val userService: RefactoredService,
+    private val userService: RefactoredService, // 인터페이스를 주입받도록 하면 자동으로 해당 인터페이스의 구현체들 중 하나를 주입받음
 ) {
     @GetMapping("/me")
     fun getMe(

@@ -12,17 +12,18 @@ import study.refactoringspring.controller.request.CreateUserInput
 import study.refactoringspring.controller.request.EditNerdPointInput
 import study.refactoringspring.controller.request.StatusInput
 import study.refactoringspring.controller.response.SuccessResponse
-import study.refactoringspring.service2.RefactoredService
-import study.refactoringspring.service2.command.CreateUser
-import study.refactoringspring.service2.command.EditNerdPoint
-import study.refactoringspring.service2.model.FullUserInfo
-import study.refactoringspring.service2.model.UserInfo
+import study.refactoringspring.service3.command.CreateUser
+import study.refactoringspring.service3.command.EditNerdPoint
+import study.refactoringspring.service3.model.FullUserInfo
+import study.refactoringspring.service3.model.UserInfo
+import study.refactoringspring.service3.EventDrivenService
+import study.refactoringspring.service3.query.GetByStatus
 import javax.transaction.Transactional
 
 @RequestMapping("refactoring")
 @RestController
 class EventDrivenController(
-    private val userService: RefactoredService,
+    private val userService: EventDrivenService,
 ) {
     @GetMapping("/me")
     fun getMe(
@@ -35,7 +36,9 @@ class EventDrivenController(
         @PathVariable statusInput: StatusInput,
     ): SuccessResponse<List<UserInfo>> =
         SuccessResponse(
-            data = userService.getByStatus(statusInput.status)
+            data = userService.getByStatus(
+                query = GetByStatus(statusInput.status)
+            )
         )
 
     // @Transactional : DB 변경 로직에 필요. 에러 발생시 롤백 등 기능 제공.
@@ -43,24 +46,20 @@ class EventDrivenController(
     @PostMapping("/user")
     fun createUser(
         @RequestBody createUserInput: CreateUserInput,
-    ): SuccessResponse<Unit> = // Unit은 Java의 void와 유사. 아무것도 반환하지 않는 형식의 반환형.
-        SuccessResponse(
-            data = userService.createUser(
-                command = CreateUser(createUserInput.name)
-            )
-        )
+    ): SuccessResponse<Unit> = // 서비스 자체는 이벤트를 반환하므로, 컨트롤러단에 별도의 작업 필요
+        userService.createUser(
+            command = CreateUser(createUserInput.name)
+        ).let { SuccessResponse(data=Unit) }
 
     @Transactional
     @PutMapping("/user")
     fun editNerdPoint(
         @RequestBody editNerdPointInput: EditNerdPointInput,
     ): SuccessResponse<Unit> =
-        SuccessResponse(
-            data = userService.editNerdPoint(
-                command = EditNerdPoint(
-                    userId = editNerdPointInput.userId,
-                    additionalPoint = editNerdPointInput.additionalPoint.toInt()
-                )
+        userService.editNerdPoint(
+            command = EditNerdPoint(
+                userId = editNerdPointInput.userId,
+                additionalPoint = editNerdPointInput.additionalPoint.toInt()
             )
-        )
+        ).let { SuccessResponse(data=Unit) }
 }

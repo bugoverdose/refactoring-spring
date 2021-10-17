@@ -55,6 +55,8 @@
   - 비교) Event Sourcing은 DB에 데이터의 최종 결과를 저장해놓는 CRUD와 달리 데이터의 변화 과정(event)과 중간 합계(snapshot)를 저장해놓는 기법
 - AOP와 커스텀 어노테이션을 활용하여 EventPublishing 과정 구현 (config의 PublishEvent와 EventPublisher 참고)
 - 구현체가 1개가 된 이유는 구현체를 둘로 나누는 것이 오히려 가독성을 해치고 있어서, 구현체가 개수와 무관하게 EDA는 구현 가능
+- cf) 반환값을 event로 설정하는 방식의 경우 AOP를 활용한 event publishing 구현이 용이하지만 컨트롤러 단에서 별도의 작업 필요. 다른 방법들로도 구현 가능.
+     
 
 ## 서비스3 부록 
 - getByStatus: query 클래스를 활용하여 init에서 DB가 불필요한 방어로직을 사전에 실행 & 더러운 로직은 함수화하여 서비스에서 그대로 실행
