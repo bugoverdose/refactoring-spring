@@ -12,8 +12,5 @@ interface UserRepository : JpaRepository<UserEntity, Long> {
 
     fun findAllByStatus(status: Status): List<UserEntity>
 
-    fun findByName(name: String): Optional<UserEntity>
-
-//    override fun findAll(pageable: Pageable): Page<UserEntity>
-
+    fun findByName(name: String): Optional<UserEntity> // UserEntity?와 같이 반환 형식 세부 지정 가능. Optional은 Java 스타일
 }

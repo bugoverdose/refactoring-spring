@@ -103,7 +103,7 @@ class VerboseService(
     fun init() {
         val nameList = listOf(
             "jeong", "jinu", "jinwoo", "zinu", "henry", "liha", "mingsu", "cloud",
-            "bunny bernie", "no more build", "woori", "stevy", "vegi",
+            "bunny bernie", "no more build", "woori", "stevy",
         )
 
         for (personName in nameList){

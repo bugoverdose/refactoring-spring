@@ -1,35 +1,43 @@
 # Refactoring Spring
 - 동일한 서비스 로직을 다양한 방식으로 리팩토링해보는 예제 코드 
-- 로컬에 git clone 후 IntelliJ로 해당 프로젝트의 build.gradle 파일을 선택하여 프로젝트를 열고,
-  실행하고 싶은 컨트롤러 및 서비스를 제외한 나머지 2개의 컨트롤러 및 서비스들 위의 빈 등록 관련 어노테이션이 주석처리되어 있으면 서버 실행 가능
-    1) VerboseService 서비스 클래스를 주입받는 VerboseController : 파일 2개 수정 필요
-    2) RefactoredService 인터페이스를 주입받는 RefactoredController : 구현체 2개 포함하여 파일 4개 수정 필요
-    3) EventDrivenService 인터페이스를 주입받는 EventDrivenController : 구현체 1개 포함하여 파일 3개 수정 필요
+
+- 프로젝트 실행 방법
+
+1. 로컬에 git clone 
+2. IntelliJ로 해당 프로젝트의 build.gradle 파일을 선택하여 프로젝트를 열기
+3. 실행하고 싶은 컨트롤러를 `제외한` 나머지 2개의 컨트롤러 및 관련 서비스들의 빈 등록 관련 어노테이션을 주석처리시켜서 서버 실행
+    - VerboseService 서비스 클래스를 주입받는 VerboseController : 서비스 파일과 컨트롤러 파일
+    - RefactoredService 인터페이스를 주입받는 RefactoredController : 서비스 구현체 파일 2개와 컨트롤러 파일
+    - EventDrivenService 인터페이스를 주입받는 EventDrivenController : 서비스 구현체 파일과 컨트롤러 파일
+
+- cf) 2번 코드보다 3번 코드가 우월한 것은 아님. 상황에 따라 적절히 선택해야 함.
 
 ## 프로젝트 개요
-세상에는 두 부류의 사람이 있습니다. 
 
-너드인 사람과 그렇지 않은 사람.
+- 세상에는 두 부류의 사람이 있습니다. 
 
-해당 프로젝트는 각 사용자의 너드 점수를 토대로 각 사용자들을 일반인 혹은 너드로 분류하고자 합니다.
+- 너드인 사람과 그렇지 않은 사람.
+
+- 해당 프로젝트는 각 사용자의 너드 점수를 토대로 각 사용자들을 일반인 혹은 너드로 분류하고자 합니다.
 
 ## API 구조
+
 [GET] /refactoring/me
-- HTTP HEADER의 USER-ID값에 해당되는 사용자 정보가 존재하면 해당 정보 조회
+- HTTP HEADER의 USER-ID값에 해당되는 사용자 정보가 존재하면 `해당 사용자 정보 조회`
 - 해당 정보가 없으면 에러
 
 [GET] /refactoring/users/{statusInput}
-- statusInput 값이 NERD면 모든 너드들의 사용자 정보 조회
-- statusInput 값이 NORMAL면 모든 일반인들의 사용자 정보 조회
+- statusInput 값이 NERD면 `모든 너드들의 사용자 정보 조회`
+- statusInput 값이 NORMAL면 `모든 일반인들의 사용자 정보 조회`
 - 그 외의 값이 들어온 경우 에러
 
 [POST] /refactoring/user
-- RequestBody의 name에 해당되는 사용자 정보 생성
+- RequestBody의 name에 해당되는 `사용자 정보 생성`
 - 동명이인이 이미 존재할 경우 에러
 - 생성된 사용자의 이름을 기준으로 로그 남기기
 
 [PUT] /refactoring/user
-- RequestBody의 userId에 해당되는 사용자의 nerdPoint를 additionalPoint만큼 더하거나 차감
+- RequestBody의 userId에 해당되는 `사용자의 nerdPoint를 additionalPoint만큼 더하거나 차감`
 - 갱신된 nerdPoint를 기준으로 사용자의 Status를 NERD 혹은 NORMAL로 변경
 - 존재하지 않는 사용자면 에러. 추가하려는 값이 0이면 에러.
 - 사용자의 너드 여부(Status)가 변경된 경우 로그 남기기
@@ -61,4 +69,12 @@
 ## 서비스3 부록 
 - getByStatus: query 클래스를 활용하여 init에서 DB가 불필요한 방어로직을 사전에 실행 & 더러운 로직은 함수화하여 서비스에서 그대로 실행
 - Destructuring Declarations : 자스의 Object Destructuring 같은 것이 kotlin에도 존재함.
-  - ex) ```val (user, statusChanged) = event```
+  - ex) `val (user, statusChanged) = event`
+    
+---
+
+## 숙제
+
+- createUser 함수가 개별적으로 호출될 때는 AOP가 동작한다.
+- EventServiceImpl에서 호출되는 createUser 함수는 AOP를 동작시키지 않는다.
+- 그 이유에 대해 서술하시오.

@@ -13,7 +13,7 @@ import javax.persistence.Table
 @Entity
 data class UserEntity( // data 클래스이므로 상속불가 + 생성자, 게터, 세터 등 자동 셋업
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // DB의 이전 데이터를 기준으로 id 값을 1 증가시킴
     val id: Long = 0L, // PK 제약조건. 데이터 생성 시점에 값 자동 생성.
 
     val name: String,
